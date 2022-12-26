@@ -1,3 +1,4 @@
+import 'package:bucket_list/models/Bucket.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -25,7 +26,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<String> _bucketList = [];
+  List<BucKet> _bucketList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -42,19 +43,27 @@ class _HomePageState extends State<HomePage> {
           : ListView.builder(
               itemCount: _bucketList.length,
               itemBuilder: (context, index) {
-                String item = _bucketList[index];
+                BucKet item = _bucketList[index];
                 return ListTile(
                   title: Text(
-                    item,
-                    style: const TextStyle(
+                    item.title,
+                    style: TextStyle(
                       fontSize: 24,
+                      color: item.isDone ? Colors.grey : Colors.black,
+                      decoration: item.isDone
+                          ? TextDecoration.lineThrough
+                          : TextDecoration.none,
                     ),
                   ),
                   trailing: IconButton(
                     icon: const Icon(Icons.delete),
                     onPressed: () {},
                   ),
-                  onTap: () {},
+                  onTap: () {
+                    setState(() {
+                      item.isDone = !item.isDone;
+                    });
+                  },
                 );
               },
             ),
@@ -67,7 +76,7 @@ class _HomePageState extends State<HomePage> {
           );
           if (item != null) {
             setState(() {
-              _bucketList.add(item);
+              _bucketList.add(BucKet(item, false));
             });
           }
         },
