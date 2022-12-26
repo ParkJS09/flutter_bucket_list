@@ -25,7 +25,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<String> _bucketList = ['여행가기'];
+  List<String> _bucketList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,11 @@ class _HomePageState extends State<HomePage> {
         title: const Text("버킷 리스트"),
       ),
       body: _bucketList.isEmpty
-          ? Center(child: Text("버킷 리스트를 작성해 주세요."))
+          ? const Center(
+              child: Text(
+                "버킷 리스트를 작성해 주세요.",
+              ),
+            )
           : ListView.builder(
               itemCount: _bucketList.length,
               itemBuilder: (context, index) {
@@ -42,12 +46,12 @@ class _HomePageState extends State<HomePage> {
                 return ListTile(
                   title: Text(
                     item,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 24,
                     ),
                   ),
                   trailing: IconButton(
-                    icon: Icon(Icons.delete),
+                    icon: const Icon(Icons.delete),
                     onPressed: () {},
                   ),
                   onTap: () {},
@@ -56,12 +60,16 @@ class _HomePageState extends State<HomePage> {
             ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
-        onPressed: () {
-          // + 버튼 클릭시 버킷 생성 페이지로 이동
-          Navigator.push(
+        onPressed: () async {
+          String? item = await Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => CreatePage()),
           );
+          if (item != null) {
+            setState(() {
+              _bucketList.add(item);
+            });
+          }
         },
       ),
     );
@@ -69,8 +77,16 @@ class _HomePageState extends State<HomePage> {
 }
 
 /// 버킷 생성 페이지
-class CreatePage extends StatelessWidget {
+class CreatePage extends StatefulWidget {
   const CreatePage({Key? key}) : super(key: key);
+
+  @override
+  State<CreatePage> createState() => _CreatePageState();
+}
+
+class _CreatePageState extends State<CreatePage> {
+  TextEditingController _textController = TextEditingController();
+  String? errorMSg;
 
   @override
   Widget build(BuildContext context) {
@@ -93,8 +109,8 @@ class CreatePage extends StatelessWidget {
             TextField(
               autofocus: true,
               decoration: InputDecoration(
-                hintText: "하고 싶은 일을 입력하세요",
-              ),
+                  hintText: "하고 싶은 일을 입력하세요", errorText: errorMSg),
+              controller: _textController,
             ),
             SizedBox(height: 32),
             // 추가하기 버튼
@@ -110,6 +126,18 @@ class CreatePage extends StatelessWidget {
                 ),
                 onPressed: () {
                   // 추가하기 버튼 클릭시
+                  String item = _textController.text;
+                  if (item.isEmpty) {
+                    setState(() {
+                      errorMSg = '내용을 입력해주세요';
+                    });
+                  } else {
+                    setState(() {
+                      errorMSg = null;
+                      Navigator.pop(context, item);
+                    });
+                  }
+                  print(item);
                 },
               ),
             ),
