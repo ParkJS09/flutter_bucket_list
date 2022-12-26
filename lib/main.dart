@@ -59,33 +59,7 @@ class _HomePageState extends State<HomePage> {
                     icon: const Icon(Icons.delete),
                     onPressed: () {
                       // 삭제를 위한 다이얼로그 노출
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text('삭제하시겠습니까?'),
-                            actions: [
-                              TextButton(
-                                onPressed: (){
-                                  Navigator.pop(context);
-                                },
-                                child: Text('취소'),
-                              ),
-                              TextButton(
-                                onPressed: (){
-                                  setState(() {
-                                    _bucketList.removeAt(index);
-                                  });
-                                  Navigator.pop(context);
-                                },
-                                child: Text('삭제',style: TextStyle(
-                                  color: Colors.pinkAccent
-                                ),),
-                              ),
-                            ],
-                          );
-                        },
-                      );
+                      showDeleteDialog(context, index);
                     },
                   ),
                   onTap: () {
@@ -110,6 +84,36 @@ class _HomePageState extends State<HomePage> {
           }
         },
       ),
+    );
+  }
+
+  void showDeleteDialog(BuildContext context, int index) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('삭제하시겠습니까?'),
+          actions: [
+            TextButton(
+              onPressed: (){
+                Navigator.pop(context);
+              },
+              child: const Text('취소'),
+            ),
+            TextButton(
+              onPressed: (){
+                setState(() {
+                  _bucketList.removeAt(index);
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('삭제',style: TextStyle(
+                color: Colors.pinkAccent
+              ),),
+            ),
+          ],
+        );
+      },
     );
   }
 }
